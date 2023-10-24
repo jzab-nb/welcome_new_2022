@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>现场报到</title>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        a{
+            color: whitesmoke;
+        }
+        ul{
+            background-color: #0d5aa7;
+            height: 35px;
+        }
+        li{
+            text-align: center;
+            line-height: 35px;
+            list-style: none;
+            float: left;
+            width: 200px;
+        }
+        li:hover{
+            background-color: #59a9fa;
+        }
+        .active{
+            background-color: #59a9fa;
+        }
+
+        .search{
+            width: 200px;
+        }
+        form{
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+        label {
+            margin-left: 30px;
+        }
+        table{
+            border: black solid 1px;
+            margin: 0 auto;
+            margin-top: 40px;
+        }
+        td{
+            border: black solid 1px;
+        }
+        th{
+            border: black solid 1px;
+        }
+    </style>
+</head>
+<body>
+    <ul>
+        <a href={% url 'index' %}><li>信息审核</li></a>
+        <a href={% url 'check_in' %}><li class="active">现场报到</li></a>
+        <a href={% url 'lbt' %}><li>轮播图管理</li></a>
+        <a href={% url 'notice' %}><li>通知管理</li></a>
+        <div style="clear: both"></div>
+    </ul>
+    <form method="post" action="#">
+        <input type="text" name="text" placeholder="请输入右面选择的内容进行查询" class="search"/>
+        <label for="choice-0">姓名：</label><input type="radio" id="choice-0" name="choice" value="0" checked>
+        <label for="choice-1">身份证号：</label><input type="radio" id="choice-1" name="choice" value="1"/>
+        <label for="choice-2">手机：</label><input type="radio" id="choice-2" name="choice" value="2"/>
+        <label for="choice-3">QQ：</label><input type="radio" id="choice-3" name="choice" value="3"/>
+        <input type="submit">
+    </form>
+    <table>
+        <tr>
+            <th>姓名</th>
+            <th>身份证号</th>
+            <th>手机</th>
+            <th>QQ</th>
+            <th>审核状态</th>
+            <th>头像</th>
+            <th>操作</th>
+        </tr>
+        {% for e in list %}
+            <tr>
+                <td>{{ e.name }}</td>
+                <td>{{ e.id_card }}</td>
+                <td>{{ e.phone }}</td>
+                <td>{{ e.qq }}</td>
+                <td>{{ e.status }}</td>
+                <td> <a href="{{ e.head_url }}" style="color:black;">点击查看</a></td>
+                <td>
+                    <button onclick="post('{{ e.uuid }}')">点击报到</button>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td>空</td><td>空</td><td>空</td><td>空</td><td>空</td><td>空</td><td>空</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <script>
+        function post(uuid){
+            let dic = new Map()
+            dic['uuid'] = uuid
+            let xhr = new XMLHttpRequest(); // 创建XHR对象
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) { // 4表示此次请求结束
+                    console.log("后端返回的结果："+this.response);
+                    window.location.replace(this.response)
+                    /** 你的逻辑代码 **/
+                    {#let result = JSON.parse(this.response);// 后端返回的结果为字符串，这里将结果转换为json#}
+                    /** 你的逻辑代码End **/
+                }
+            };
+            xhr.open( // 打开链接
+                "post",
+                "{% url 'report' %}", // 后端地址
+                true
+            );
+            xhr.setRequestHeader("Content-Type", "application/json"); // 设置请求头
+            xhr.send( // 设置需要携带到后端的字段，字符串形式
+                JSON.stringify(dic)
+            );
+        }
+    </script>
+</body>
+</html>

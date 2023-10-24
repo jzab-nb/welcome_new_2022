@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>轮播图管理</title>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        a{
+            color: whitesmoke;
+        }
+        ul{
+            background-color: #0d5aa7;
+            height: 35px;
+        }
+        li{
+            text-align: center;
+            line-height: 35px;
+            list-style: none;
+            float: left;
+            width: 200px;
+        }
+        li:hover{
+            background-color: #59a9fa;
+        }
+        .active{
+            background-color: #59a9fa;
+        }
+        table{
+            border: black solid 1px;
+            margin: 0 auto;
+            margin-top: 30px;
+        }
+        td{
+            border: black solid 1px;
+        }
+        th{
+            border: black solid 1px;
+        }
+        img{
+            display: inline-block;
+            width: 200px;
+            height: 120px;
+        }
+    </style>
+</head>
+<body>
+    <ul>
+        <a href={% url 'index' %}><li>信息审核</li></a>
+        <a href={% url 'check_in' %}><li>现场报到</li></a>
+        <a href={% url 'lbt' %}><li class="active">轮播图管理</li></a>
+        <a href={% url 'notice' %}><li>通知管理</li></a>
+    </ul>
+    <table>
+        <tr>
+            <th>图片</th>
+            <th>操作</th>
+        </tr>
+        {% for i in list %}
+            <tr>
+                <td>
+                    <img src="{{ i.url }}">
+                </td>
+                <td>
+                    <button onclick="myDelete('{{ i.uuid }}')">删除</button>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td>空</td><td>空</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <form action={% url 'lbt' %} method="post" enctype="multipart/form-data">
+        上传新的图片
+        <input type="file" name="file"/>
+        <input type="submit">
+    </form>
+    <script>
+        function myDelete(uuid){
+            let dic = new Map()
+            dic['uuid'] = uuid
+            let xhr = new XMLHttpRequest(); // 创建XHR对象
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) { // 4表示此次请求结束
+                    console.log("后端返回的结果："+this.response);
+                    window.location.replace(this.response)
+                    /** 你的逻辑代码 **/
+                    {#let result = JSON.parse(this.response);// 后端返回的结果为字符串，这里将结果转换为json#}
+                    /** 你的逻辑代码End **/
+                }
+            };
+            xhr.open( // 打开链接
+                "delete",
+                "{% url 'lbt' %}", // 后端地址
+                true
+            );
+            xhr.setRequestHeader("Content-Type", "application/json"); // 设置请求头
+            xhr.send( // 设置需要携带到后端的字段，字符串形式
+                JSON.stringify(dic)
+            );
+        }
+    </script>
+</body>
+</html>

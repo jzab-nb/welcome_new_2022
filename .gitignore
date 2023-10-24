@@ -1,0 +1,21 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/../../../../../:\Python\Django\info\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+
+## idea配置文件
+.idea
+# 临时运行文件
+*/__pycache__
+# 虚拟环境
+/venv/
+信息工程学院.xls
+example5-copy xjn echart.zip
+example5-copy xjn echart/
+dev.sqlite3/
+static/new/photo/
+生成语音
